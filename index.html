@@ -81,17 +81,30 @@
             });
         }
 
-        function handlePayload(payload) {
-            if (payload.type === "custom_date_range_picker") {
-                showDatePicker();
-            }
-        }
+       function handleVoiceflowPayload(payload) {
+    if (payload.type === "custom_date_range_picker") {
+        showDatePicker();
+    }
+}
 
-        // Simulate receiving a custom payload
-        setTimeout(() => {
-            const examplePayload = { type: "custom_date_range_picker" };
-            handlePayload(examplePayload);
-        }, 1000);
-    </script>
-</body>
-</html>
+// Assuming you have a way to receive messages from Voiceflow
+voiceflow.on('message', (payload) => {
+    handleVoiceflowPayload(payload);
+});
+
+function showDatePicker() {
+    document.getElementById('date-picker-container').style.display = 'block';
+    flatpickr("#date-range-picker", {
+        mode: "range",
+        dateFormat: "Y-m-d"
+    });
+}
+
+function submitDateRange() {
+    const dateRange = document.getElementById('date-range-picker').value;
+    if (dateRange) {
+        // Send the date range back to Voiceflow
+        voiceflow.send('date_range_selected', { dateRange });
+    }
+    document.getElementById('date-picker-container').style.display = 'none';
+}
