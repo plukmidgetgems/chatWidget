@@ -63,7 +63,7 @@
         function sendDateRangeToVoiceflow(dateRange) {
             console.log("Date range selected:", dateRange);
 
-            fetch('https://general-runtime.voiceflow.com', {  // Change to your Voiceflow webhook URL
+            fetch('http://localhost:3000/calendar', {  // Change to your Voiceflow webhook URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
