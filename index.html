@@ -16,12 +16,18 @@
             border: 1px solid #ccc;
             margin: 10px 0;
         }
+        #date-picker-container {
+            display: none;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <div id="chat-container">
         <div id="messages"></div>
-        <div id="date-picker-container" style="display:none;">
+        <div id="date-picker-container">
             <input type="text" id="date-range-picker" placeholder="Pick a date range">
             <button onclick="submitDateRange()">Submit</button>
         </div>
@@ -48,23 +54,42 @@
                 message.textContent = "Date range selected: " + dateRange;
                 messagesDiv.appendChild(message);
 
-                // Here you would send the date range back to your Voiceflow assistant
-                // For example, by making an API call to Voiceflow or using a messaging protocol
-                console.log("Date range selected:", dateRange);
+                // Send the date range back to Voiceflow
+                sendDateRangeToVoiceflow(dateRange);
             }
             datePickerContainer.style.display = 'none';
         }
 
-        // Simulate receiving a custom payload from Voiceflow to show the date picker
+        function sendDateRangeToVoiceflow(dateRange) {
+            // Implement the logic to send data back to Voiceflow
+            console.log("Date range selected:", dateRange);
+
+            // Example of sending data back to Voiceflow via an HTTP POST request
+            fetch('https://your-voiceflow-webhook-endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ dateRange: dateRange })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
         function handlePayload(payload) {
-            if (payload.type === "show_date_range_picker") {
+            if (payload.type === "custom_date_range_picker") {
                 showDatePicker();
             }
         }
 
-        // Simulate receiving the payload
+        // Simulate receiving a custom payload
         setTimeout(() => {
-            const examplePayload = { type: "show_date_range_picker" };
+            const examplePayload = { type: "custom_date_range_picker" };
             handlePayload(examplePayload);
         }, 1000);
     </script>
