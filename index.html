@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         #chat-container {
-            max-width: 400px;
+            max-width: 600px;
             margin: 0 auto;
             padding: 10px;
             border: 1px solid #ccc;
@@ -17,7 +17,6 @@
             margin: 10px 0;
         }
         #date-picker-container {
-            display: none;
             padding: 10px;
             border: 1px solid #ccc;
             margin: 10px 0;
@@ -37,17 +36,24 @@
     <script>
         const messagesDiv = document.getElementById('messages');
         const datePickerContainer = document.getElementById('date-picker-container');
+        const dateRangePicker = document.getElementById('date-range-picker');
+        let selectedDateRange = '';
 
         function showDatePicker() {
             datePickerContainer.style.display = 'block';
-            flatpickr("#date-range-picker", {
+            const fp = flatpickr("#date-range-picker", {
                 mode: "range",
-                dateFormat: "Y-m-d"
+                dateFormat: "Y-m-d",
+                onClose: function(selectedDates, dateStr, instance) {
+                    selectedDateRange = dateStr;
+                    submitDateRange();
+                }
             });
+            fp.open(); // Open the date picker immediately
         }
 
         function submitDateRange() {
-            const dateRange = document.getElementById('date-range-picker').value;
+            const dateRange = dateRangePicker.value;
             if (dateRange) {
                 const message = document.createElement('div');
                 message.className = 'chat-message';
@@ -63,7 +69,7 @@
         function sendDateRangeToVoiceflow(dateRange) {
             console.log("Date range selected:", dateRange);
 
-            fetch('https://fast-basin-60937-ccde9e93fdd9.herokuapp.com/', {  // Change to your Voiceflow webhook URL
+            fetch('https://your-voiceflow-webhook-url.com/', {  // Change to your Voiceflow webhook URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -73,6 +79,7 @@
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
+                askForConfirmation(dateRange);
             })
             .catch((error) => {
                 console.error('Error:', error);
